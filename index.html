@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css"
+    />
+</head>
+<body>
+    <input type="text">
+    <script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
+    <script type="text/javascript">
+        (() => {
+            const events = []
+            const stopFn = rrweb.record({
+                emit(event) {
+                    if (events.length > 20) {
+                        console.log('rrweb events download')
+                        stopFn();
+                        const files = events.map(item => JSON.stringify(item)).join('\n');
+                        const blob = new Blob([files], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'rrweb.txt';
+                        a.click();
+                    } else {
+                        events.push(event);
+                        console.log('rrweb emit event: ', event);
+                    }
+                }
+            })
+        })()
+    </script>
+</body>
+</html>
